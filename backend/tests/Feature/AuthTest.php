@@ -47,7 +47,8 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertStatus(422)
-            ->assertJsonValidationErrors(['email']);
+            ->assertJsonValidationErrors(['email'])
+            ->assertJsonPath('errors.email.0', 'Email atau password salah');
     }
 
     public function test_authenticated_user_can_logout(): void

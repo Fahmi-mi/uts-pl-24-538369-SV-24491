@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\GadgetController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -13,4 +14,7 @@ Route::middleware('auth:sanctum')->group(function () {
             'data' => $request->user(),
         ]);
     });
+
+    Route::get('/gadgets/{id}/price-histories', [GadgetController::class, 'priceHistories']);
+    Route::apiResource('gadgets', GadgetController::class);
 });

@@ -12,6 +12,7 @@
 /.phpunit.cache
 /.vscode
 /.zed
+/.claude
 /AGENTS.md
 /.agents/skills
 /boost.json

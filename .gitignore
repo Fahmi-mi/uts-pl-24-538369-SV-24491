@@ -1,0 +1,8 @@
+# Root environment configuration (Docker Compose)
+.env
+.env.backup
+.env.production
+
+# Operating System files
+.DS_Store
+Thumbs.db

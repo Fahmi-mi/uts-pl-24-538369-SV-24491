@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class StoreGadgetRequest extends FormRequest
 {
@@ -25,5 +27,16 @@ class StoreGadgetRequest extends FormRequest
             'status' => ['sometimes', 'in:wishlist,purchased,dropped'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        Log::warning('Validation failed for storing gadget', [
+            'user' => (string) ($this->user()?->id ?? 'guest'),
+            'action' => 'store_gadget_validation',
+            'reason' => $validator->errors()->toArray(),
+        ]);
+
+        parent::failedValidation($validator);
     }
 }

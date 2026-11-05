@@ -10,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class GadgetController extends Controller
 {
@@ -30,7 +31,7 @@ class GadgetController extends Controller
         });
 
         $query->when($request->filled('search'), function ($q) use ($request) {
-            $term = '%' . $request->query('search') . '%';
+            $term = '%'.$request->query('search').'%';
             $q->where(function ($sub) use ($term) {
                 $sub->where('name', 'like', $term)
                     ->orWhere('brand', 'like', $term);
@@ -52,6 +53,14 @@ class GadgetController extends Controller
 
             return $gadget;
         });
+
+        Log::info('Gadget stored successfully', [
+            'user' => (string) $request->user()->id,
+            'action' => 'store_gadget',
+            'reason' => 'gadget created by user',
+            'gadget_id' => $gadget->id,
+            'gadget_name' => $gadget->name,
+        ]);
 
         return response()->json([
             'message' => 'Gadget berhasil ditambahkan',
@@ -86,6 +95,13 @@ class GadgetController extends Controller
             return $gadget;
         });
 
+        Log::info('Gadget updated successfully', [
+            'user' => (string) $request->user()->id,
+            'action' => 'update_gadget',
+            'reason' => 'gadget updated by user',
+            'gadget_id' => $gadget->id,
+        ]);
+
         return response()->json([
             'message' => 'Gadget berhasil diperbarui',
             'data' => new GadgetResource($gadget),
@@ -96,6 +112,13 @@ class GadgetController extends Controller
     {
         $gadget = $request->user()->gadgets()->findOrFail($id);
         $gadget->delete();
+
+        Log::info('Gadget deleted successfully', [
+            'user' => (string) $request->user()->id,
+            'action' => 'delete_gadget',
+            'reason' => 'gadget deleted by user',
+            'gadget_id' => $id,
+        ]);
 
         return response()->json([
             'message' => 'Gadget berhasil dihapus',

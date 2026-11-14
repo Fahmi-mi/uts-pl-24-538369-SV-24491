@@ -1,0 +1,13 @@
+groups:
+  - name: wishradar_alerts
+    rules:
+      - alert: WishRadarBackendDown
+        expr: up{job="wishradar-backend"} == 0
+        for: 30s
+        labels:
+          severity: critical
+          service: wishradar-backend
+        annotations:
+          summary: "Layanan backend WishRadar tidak merespons"
+          description: "Target wishradar-backend pada {{ $labels.instance }} berstatus DOWN selama lebih dari 30 detik."
+          tindakan_pertama: "Periksa status container dengan menjalankan 'docker compose ps', lalu cek log error terbaru dengan 'docker compose logs backend --tail=50' dan pastikan layanan database MySQL berstatus healthy."

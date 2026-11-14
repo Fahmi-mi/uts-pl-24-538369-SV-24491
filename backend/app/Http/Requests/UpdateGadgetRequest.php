@@ -2,7 +2,9 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 
 class UpdateGadgetRequest extends FormRequest
 {
@@ -25,5 +27,16 @@ class UpdateGadgetRequest extends FormRequest
             'status' => ['sometimes', 'in:wishlist,purchased,dropped'],
             'notes' => ['nullable', 'string', 'max:1000'],
         ];
+    }
+
+    protected function failedValidation(Validator $validator): void
+    {
+        Log::warning('Validation failed for updating gadget', [
+            'user' => (string) ($this->user()?->id ?? 'guest'),
+            'action' => 'update_gadget_validation',
+            'reason' => $validator->errors()->toArray(),
+        ]);
+
+        parent::failedValidation($validator);
     }
 }
